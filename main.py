@@ -288,17 +288,6 @@ class Basic(Screen):
 
     def __init__(self, **kwargs):
         super(Basic, self).__init__(**kwargs)
-        Window.bind(on_keyboard=self._key_handler)
-
-    def _key_handler(self, instance, key, *args):
-        if key == 27:
-            self.set_previous_screen()
-            return True
-
-    def set_previous_screen(self):
-        if sm.current != "Homepage":
-            sm.transition.direction = 'right'
-            sm.current = "Menu"
             
     layouts = []
     def steps(self,entry):
@@ -497,17 +486,6 @@ class Fractions(Screen):
 
     def __init__(self, **kwargs):
         super(Fractions, self).__init__(**kwargs)
-        Window.bind(on_keyboard=self._key_handler)
-
-    def _key_handler(self, instance, key, *args):
-        if key == 27:
-            self.set_previous_screen()
-            return True
-
-    def set_previous_screen(self):
-        if sm.current != "Homepage":
-            sm.transition.direction = 'right'
-            sm.current = "Menu"
             
     layouts = []
     def add(self,entry):
@@ -2328,7 +2306,7 @@ Builder.load_string("""
                     height: 200
                     padding: 10, 10
                     on_release:
-                        list_of_steps.clear_widgets() 
+                        list_of_steps.clear_widgets() lsk
                         Percentage_Calculator.decrease(number.text + "&" + perc.text)
     
                        
@@ -2345,17 +2323,6 @@ class Percentage_Calculator(Screen):
 
     def __init__(self, **kwargs):
         super(Percentage_Calculator, self).__init__(**kwargs)
-        Window.bind(on_keyboard=self._key_handler)
-
-    def _key_handler(self, instance, key, *args):
-        if key == 27:
-            self.set_previous_screen()
-            return True
-
-    def set_previous_screen(self):
-        if sm.current != "Homepage":
-            sm.transition.direction = 'right'
-            sm.current = "Menu"
             
     layouts = []
     def increase(self,entry):
@@ -2430,6 +2397,16 @@ sm.add_widget(Fractions(name="Fractions"))
 sm.add_widget(updates(name="updates"))     
 
 class Basic_Bundle(App):
+    def __init__(self, **kwargs):
+        super(Basic_Bundle, self).__init__(**kwargs)
+        Window.bind(on_keyboard=self._key_handler)
+    
+    def _key_handler(self, instance, key, *args):
+        print("key:",key)
+        if key == 27:
+            sm.current = sm.current
+            return True
+    
     def build(app):
         return sm
 
