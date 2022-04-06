@@ -42,7 +42,7 @@ Builder.load_string("""
             background_color: 0, 0 , 0 , 1
             size_hint_y: None
             height: 200
-            text: "KSquared-math,LLC © : Algebra Calculators"
+            text: "KSquared-math,LLC © : Basic Calculators"
             on_release:
                 app.root.current = "Menu"
                 root.manager.transition.direction = "left" 
@@ -2306,7 +2306,7 @@ Builder.load_string("""
                     height: 200
                     padding: 10, 10
                     on_release:
-                        list_of_steps.clear_widgets() lsk
+                        list_of_steps.clear_widgets()
                         Percentage_Calculator.decrease(number.text + "&" + perc.text)
     
                        
