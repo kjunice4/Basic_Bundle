@@ -85,7 +85,18 @@ Builder.load_string("""
                 on_release:
                     app.root.current = "Basic"
                     root.manager.transition.direction = "left" 
-            
+                    
+            Button:
+                text: "Exponents Calculator"   
+                font_size: 75
+                background_color: 0, 0 , 1 , 1
+                size_hint_y: None
+                height: 200
+                padding: 10, 10
+                on_release:
+                    app.root.current = "Exponents_steps"
+                    root.manager.transition.direction = "left"
+                    
             Button:
                 text: "Fractions Calculator"   
                 font_size: 75
@@ -2389,6 +2400,186 @@ class Percentage_Calculator(Screen):
             self.ids.list_of_steps.add_widget(Label(text= "Invalid Input" ,font_size = 60, size_hint_y= None, height=100))
             self.layouts.append(layout)  
 
+#EXPONENTS STEPS
+Builder.load_string("""
+<Exponents_steps>
+    id:Exponents_steps
+    name:"Exponents_steps"
+
+    ScrollView:
+        name: "Scroll"
+        do_scroll_x: False
+        do_scroll_y: True
+        
+        GridLayout:
+            cols: 1
+            padding:10
+            spacing:10
+            size_hint: 1, None
+            width:200
+            height: self.minimum_height
+            
+            Label:
+                font_size: 75
+                size_hint_y: None
+                height: 200
+                padding: 10, 10
+                text: "Exponents Calculator"
+            
+            BoxLayout:
+                cols: 2
+                padding:10
+                spacing:10
+                size_hint: 1, None
+                width:300
+                size_hint_y: None
+                height: self.minimum_height 
+
+                Button:
+                    text: "Menu"   
+                    font_size: 75
+                    size_hint_y: None
+                    height: 200
+                    padding: 10, 10
+                    background_color: 0, 0 , 1 , 1
+                    on_release:
+                        app.root.current = "Menu"
+                        root.manager.transition.direction = "right" 
+                        
+                Button:
+                    id: steps
+                    text: "Clear All"   
+                    font_size: 75
+                    size_hint_y: None
+                    background_color: 1, 0 , 0 , 1
+                    height: 200
+                    padding: 10, 10
+                    on_release:
+                        Power_entry.text = ""
+                        Base_entry.text = ""
+                        list_of_steps.clear_widgets()       
+                        
+            Label:
+                font_size: 75
+                size_hint_y: None
+                height: 200
+                padding: 10, 10
+                text: "Base ^ Power"
+                
+            BoxLayout:
+                cols: 2
+                id: steps
+                size_hint_y: None
+                height: self.minimum_height 
+                padding: 5,5         
+        
+                TextInput:
+                    id: Base_entry
+                    text: Base_entry.text
+                    hint_text: "Base:"
+                    multiline: False
+                    font_size: 125
+                    size_hint_y: None
+                    height: 200
+                    padding: 10
+                    input_filter: lambda text, from_undo: text[:3 - len(Base_entry.text)]           
+            
+            BoxLayout:
+                cols: 2
+                id: steps
+                size_hint_y: None
+                height: self.minimum_height 
+                padding: 5,5        
+        
+                TextInput:
+                    id: Power_entry
+                    text: Power_entry.text
+                    hint_text: "Power:"
+                    multiline: False
+                    font_size: 125
+                    size_hint_y: None
+                    height: 200
+                    padding: 10              
+                    input_filter: lambda text, from_undo: text[:2 - len(Power_entry.text)]           
+            
+            Button:
+                id: steps
+                text: "Calculate"   
+                font_size: 75
+                size_hint_y: None
+                background_color: 0, 1 , 0 , 1
+                height: 200
+                padding: 10, 10
+                on_release:
+                    list_of_steps.clear_widgets() 
+                    Exponents_steps.steps(Base_entry.text + "$" + Power_entry.text)    
+                       
+            GridLayout:
+                id: list_of_steps
+                cols: 1
+                size_hint: 1, None
+                height: self.minimum_height   
+
+""")
+
+class Exponents_steps(Screen):
+    sm = ScreenManager()
+
+    def __init__(self, **kwargs):
+        super(Exponents_steps, self).__init__(**kwargs)
+            
+    layouts = []
+    def steps(self,entry):
+        print()
+        layout = GridLayout(cols=1,size_hint_y= None)
+        self.ids.list_of_steps.add_widget(layout)
+        self.layouts.append(layout)
+        
+        try:
+            print("entry",entry)
+            display = entry.replace("$","^")
+            entry_list = entry.split("$")
+            print("display :" + display)
+            self.ids.list_of_steps.add_widget(Label(text="Expression entered : " + display, font_size = 50, size_hint_y= None, height=100))
+            Answer = str(eval(str(display).replace("^","**")))
+            Answer = "{:,}".format(float(Answer.replace(",","")))
+            print("Answer",Answer)
+            self.ids.list_of_steps.add_widget(Label(text="Answer: " + '[color=33CAFF]' + Answer + '[/color]', markup=True, font_size = 50, size_hint_y= None, height=100))
+            self.layouts.append(layout)
+            
+            entry = entry_list
+            print("entry split: ",entry)
+            print()
+            
+            base = entry_list[0]
+            print("base",base)
+            
+            power = entry_list[1]
+            print("power",power)
+            
+            if power.find("-") < 0:
+                self.ids.list_of_steps.add_widget(Label(text="Proof of work:", font_size = 50, size_hint_y= None, height=100))
+                
+                i = 0
+                product = base
+                power_ = power
+                while i < float(power_):
+                    length = '[color=33CAFF]' + product + '[/color]' + " * " + base
+                    print("length",length)
+                    if int(power) > 1:
+                        self.ids.list_of_steps.add_widget(Label(text= length ,font_size = 50, markup=True, size_hint_y= None, height=100))
+                    else:
+                        self.ids.list_of_steps.add_widget(Label(text= '[color=33CAFF]' + product + '[/color]', markup=True, font_size = 50, size_hint_y= None, height=100))
+                    power = int(power) - 1
+                    print("power",power)
+                    product = "{:,}".format(float(product.replace(",","")) * float(base))
+                    print("product",product)
+                    i = i + 1
+            
+        except Exception:
+            self.ids.list_of_steps.add_widget(Label(text= "Invalid Input" ,font_size = 50, size_hint_y= None, height=100))
+            self.layouts.append(layout)  
+
 class Homepage(Screen):
     pass            
 
@@ -2402,6 +2593,7 @@ sm = ScreenManager()
 sm.add_widget(Homepage(name="Homepage"))
 sm.add_widget(Menu(name="Menu"))
 sm.add_widget(Basic(name="Basic"))     
+sm.add_widget(Exponents_steps(name="Exponents_steps"))   
 sm.add_widget(Percentage_Calculator(name="Percentage_Calculator"))
 sm.add_widget(Fractions(name="Fractions")) 
 sm.add_widget(updates(name="updates"))     
